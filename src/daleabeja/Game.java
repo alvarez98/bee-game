@@ -46,6 +46,11 @@ public class Game extends javax.swing.JFrame {
 
         jButton2.setFont(new java.awt.Font("DejaVu Serif", 1, 14)); // NOI18N
         jButton2.setText("Registrarme");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         txtUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -134,26 +139,24 @@ public class Game extends javax.swing.JFrame {
             
             Connection con = null;
             con = getConnection();
-            
             PreparedStatement ps;
             ResultSet res;
-            
-            ps=con.prepareStatement("SELECT name_user, password_user FROM users");
+            boolean band=false;
+            ps= con.prepareStatement("SELECT name_user, password_user FROM users");
             res= ps.executeQuery();
             
-            if(res.next()){
-                JOptionPane.showMessageDialog(null, res.getString("name_user"));
-                if( res.getString("name_user").equals(txtUsuario.getText())){       
-                    if ( res.getString("password_user").equals(txtPass.getText())){
-                        startGame();
-                    }else{
-                       JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(null, "No se encontró el usuario");
-                }
-            }else{
-                JOptionPane.showMessageDialog(null, "NO EXISTEN DATOS");
+            while(res.next()){
+                            if( res.getString("name_user").equals(txtUsuario.getText())){       
+                                if ( res.getString("password_user").equals(txtPass.getText())){
+                                    band = true;
+                                    startGame();
+                                }else{
+                                   JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
+                                }
+                            }
+            }
+            if(!band){
+                JOptionPane.showMessageDialog(null, "No se encontró el usuario");
             }
             con.close();
             
@@ -162,6 +165,14 @@ public class Game extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SignIn si = new SignIn();
+        si.setVisible(true);
+        si.setLocationRelativeTo(null);
+        si.setTitle("Registrarse");
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
      public static Connection getConnection() {
         Connection con = null;
         try {
