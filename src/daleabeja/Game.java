@@ -12,15 +12,16 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 public class Game extends javax.swing.JFrame {
-    
+  
     public static final String URL = "jdbc:mysql://localhost:3306/beegame?useSSL=false";
     public static final String USERNAME = "root";
     public static final String PASSWORD = "root";
    
     public Game() {
+        
         initComponents();
     }
-
+   
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -134,28 +135,32 @@ public class Game extends javax.swing.JFrame {
         DaleAbeja bee = new DaleAbeja(sonido1, sonido2, sonido3); // enviarlos al metodo abeja contructor
         bee.setVisible(true);
     }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             
             Connection con = null;
             con = getConnection();
             PreparedStatement ps;
-            ResultSet res;
             boolean band=false;
-            ps= con.prepareStatement("SELECT name_user, password_user FROM users");
+            ResultSet res;
+            ps= con.prepareStatement("SELECT id_user, name_user, password_user FROM users");
             res= ps.executeQuery();
             
-            while(res.next()){
-                            if( res.getString("name_user").equals(txtUsuario.getText())){       
-                                if ( res.getString("password_user").equals(txtPass.getText())){
-                                    band = true;
-                                    startGame();
-                                }else{
-                                   JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
-                                }
-                            }
+            while (res.next()) {
+                
+                if (res.getString("name_user").equals(txtUsuario.getText())) {
+                    if (res.getString("password_user").equals(txtPass.getText())) {
+                        band = true;
+                        DaleAbeja da = new DaleAbeja();
+                        da.setUsuario(txtUsuario.getText());
+                        startGame();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
+                    }
+                }
             }
-            if(!band){
+            if (!band) {
                 JOptionPane.showMessageDialog(null, "No se encontró el usuario");
             }
             con.close();
@@ -223,6 +228,6 @@ public class Game extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txtPass;
-    private javax.swing.JTextField txtUsuario;
+    public static javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -139,9 +139,8 @@ public class SignIn extends javax.swing.JFrame {
             ResultSet res;
             ps=con.prepareStatement("SELECT id_user FROM users");
             res= ps.executeQuery();
-            if(res.next()){
+            while(res.next()){
                 serial= Integer.parseInt(res.getString("id_user"));
-                
             }
             if(!txtNombre.getText().equals("")|| !txtPass.getText().equals("")){
                 ps=con.prepareStatement("INSERT INTO users ( id_user, name_user, password_user ) VALUES ( \""+ serial+1 +"\",\""+ txtNombre.getText() +"\", \""+ txtPass.getText() +"\" );");
