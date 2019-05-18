@@ -3,3 +3,4 @@
 *.form
 .netbeans_update_resources
 .netbeans_automatic_build
+nbproject/private/private.properties
