@@ -1,10 +1,9 @@
-
 package daleabeja;
 
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet; 
+import java.sql.ResultSet;
 import javax.swing.*; //JPanel,JFrame,varias cosas :P
 import java.awt.*; //propiedades imagenes y figuras
 import java.awt.event.*; //para MouseEvent
@@ -15,10 +14,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMotionListener, MouseListener {
 
-    Game game = new Game();
     public static String getUsuario() {
         return Usuario;
     }
@@ -30,7 +27,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
     public static final String URL = "jdbc:mysql://localhost:3306/beegame?useSSL=false";
     public static final String USERNAME = "root";
     public static final String PASSWORD = "root";
-    
+
     String IMG_FOLDER = "/imagenes/";
     JFrame frame;
     Thread thread;
@@ -65,7 +62,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
     public DaleAbeja() {
         initComponents();
     }
-    
+
     public DaleAbeja(final AudioClip sound1, final AudioClip sound3, final AudioClip sound4) {
         frame = new JFrame(); // ventana
         //setBackground(Color.white);
@@ -96,7 +93,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
         thread = new Thread(this);
         thread.start(); // se activa el run del hilo
     }
-    
+
     public void run() {
         while (true) {
             try {
@@ -106,21 +103,24 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
             repaint();
         }
     }
+
     public void terminar() {
-        game.setVisible(true);
-        game.setLocationRelativeTo(null);
-        game.setTitle("Login");
         try {
             sleep(2000);
+            BestScores bs = new BestScores();
+            bs.setVisible(true);
+            bs.setLocationRelativeTo(null);
+            bs.setTitle("Best Scores");
+            Window w = SwingUtilities.getWindowAncestor(DaleAbeja.this);
+            w.dispose();
         } catch (Exception e) {
             System.out.println(e);
         }
-        Window w = SwingUtilities.getWindowAncestor(DaleAbeja.this);
-        w.setVisible(false);
     }
+
     public void paint(Graphics g) {
         super.paint(g);
-        //g.drawImage(fondo, 0, 0, 850, 520, null); // dibuja imagen de fondo
+        g.drawImage(fondo, 0, 0, 850, 520, null); // dibuja imagen de fondo
         for (int q = 0; q < CChancla; q++) { // cuantas chanclas dibujare??
             g.drawImage(chancla, 500 + (q * 40), 440, 80, 80, null); // dibuja chanclas
         }
@@ -280,27 +280,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
                 g.drawString("CUIDA DE LAS ABEJAS", 600, 513);
                 Font Final = new Font("", Font.BOLD, 100); // fuente
                 g.setFont(Final);
-                
-                try {
-            
-                    Connection con = null;
-                    con = getConnection();
-                    PreparedStatement ps, ps1;
-                    Date date = new Date (); 
-                    DateFormat hourFormat = new SimpleDateFormat ( "dd-mm-yy hh:mm:ss " );
-                    ResultSet res;
-                    ps= con.prepareStatement("SELECT id_user FROM users WHERE name_user=\""+ getUsuario() +"\";");
-                    res = ps.executeQuery();
-                    if(res.next()){
-                        ps1 = con.prepareStatement("INSERT INTO scores ( id_user, score_sc, date_sc ) VALUES ( \""+ res.getString("id_user")  +"\",\""+ atinados +"\", \""+ hourFormat.format (date) +"\" );");
-                        ps1.executeUpdate();
-                    }
-                    con.close();
-                    
-                }catch(Exception ex) {
-                    System.out.println(ex);
-                }
-               
+
                 if (atinados > 5) {
                     g.drawString("GANASTE", 200, 250);
                     terminar();
@@ -312,7 +292,27 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
                 for (int q = 0; q < 10; q++) {
                     g.drawImage(puntos[q], 1 + (q * 40), 480, 40, 40, null); // dibuja puntos en abejas
                 }
-                
+
+                try {
+
+                    Connection con = null;
+                    con = getConnection();
+                    PreparedStatement ps, ps1;
+                    Date date = new Date();
+                    DateFormat hourFormat = new SimpleDateFormat("dd-mm-yy hh:mm:ss ");
+                    ResultSet res;
+                    ps = con.prepareStatement("SELECT id_user FROM users WHERE name_user=\"" + getUsuario() + "\";");
+                    res = ps.executeQuery();
+                    if (res.next()) {
+                        ps1 = con.prepareStatement("INSERT INTO scores ( id_user, score_sc, date_sc ) VALUES ( \"" + res.getString("id_user") + "\",\"" + atinados + "\", \"" + hourFormat.format(date) + "\" );");
+                        ps1.executeUpdate();
+                    }
+                    con.close();
+
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+
             } else {
                 g.drawImage(abejas[SelImg], Abejax, Abejay, dsizex, dsizey, null); // dibuja nueva abeja, nueva imagen
                 CuadroAbeja = new Rectangle(Abejax, Abejay, dsizex, dsizey); // se le asigna al rectangulo las
@@ -348,6 +348,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
             sonido3.play();
         } // sonido sin balas
     }
+
     public static Connection getConnection() {
         Connection con = null;
         try {
@@ -358,6 +359,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
         }
         return con;
     }
+
     public void mouseDragged(MouseEvent e) {
     }
 

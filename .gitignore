@@ -1,8 +1,6 @@
-# Netbeans files
 /dist/
 *.class
-*.form
-*.properties
 *.xml
-.netbeans_update_resources
-.netbeans_automatic_build
+*.properties
+build/classes/.netbeans_automatic_build
+build/classes/.netbeans_update_resources
