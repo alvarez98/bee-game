@@ -1,25 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package daleabeja;
 
-/**
- *
- * @author raul
- */
+import com.mysql.jdbc.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet; 
 import javax.swing.*; //JPanel,JFrame,varias cosas :P
 import java.awt.*; //propiedades imagenes y figuras
 import java.awt.event.*; //para MouseEvent
 import java.util.*; //operaciones
 import java.applet.*; //sonidos
+import static java.lang.Thread.sleep;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMotionListener, MouseListener {
 
-    /**
-     * Creates new form DaleAbeja
-     */
+    Game game = new Game();
+    public static String getUsuario() {
+        return Usuario;
+    }
+
+    public static void setUsuario(String aUsuario) {
+        Usuario = aUsuario;
+    }
+    private static String Usuario = "";
+    public static final String URL = "jdbc:mysql://localhost:3306/beegame?useSSL=false";
+    public static final String USERNAME = "root";
+    public static final String PASSWORD = "root";
+    
     String IMG_FOLDER = "/imagenes/";
     JFrame frame;
     Thread thread;
@@ -54,7 +65,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
     public DaleAbeja() {
         initComponents();
     }
-
+    
     public DaleAbeja(final AudioClip sound1, final AudioClip sound3, final AudioClip sound4) {
         frame = new JFrame(); // ventana
         //setBackground(Color.white);
@@ -85,7 +96,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
         thread = new Thread(this);
         thread.start(); // se activa el run del hilo
     }
-
+    
     public void run() {
         while (true) {
             try {
@@ -95,7 +106,18 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
             repaint();
         }
     }
-
+    public void terminar() {
+        game.setVisible(true);
+        game.setLocationRelativeTo(null);
+        game.setTitle("Login");
+        try {
+            sleep(2000);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        Window w = SwingUtilities.getWindowAncestor(DaleAbeja.this);
+        w.setVisible(false);
+    }
     public void paint(Graphics g) {
         super.paint(g);
         //g.drawImage(fondo, 0, 0, 850, 520, null); // dibuja imagen de fondo
@@ -258,15 +280,39 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
                 g.drawString("CUIDA DE LAS ABEJAS", 600, 513);
                 Font Final = new Font("", Font.BOLD, 100); // fuente
                 g.setFont(Final);
+                
+                try {
+            
+                    Connection con = null;
+                    con = getConnection();
+                    PreparedStatement ps, ps1;
+                    Date date = new Date (); 
+                    DateFormat hourFormat = new SimpleDateFormat ( "dd-mm-yy hh:mm:ss " );
+                    ResultSet res;
+                    ps= con.prepareStatement("SELECT id_user FROM users WHERE name_user=\""+ getUsuario() +"\";");
+                    res = ps.executeQuery();
+                    if(res.next()){
+                        ps1 = con.prepareStatement("INSERT INTO scores ( id_user, score_sc, date_sc ) VALUES ( \""+ res.getString("id_user")  +"\",\""+ atinados +"\", \""+ hourFormat.format (date) +"\" );");
+                        ps1.executeUpdate();
+                    }
+                    con.close();
+                    
+                }catch(Exception ex) {
+                    System.out.println(ex);
+                }
+               
                 if (atinados > 5) {
                     g.drawString("GANASTE", 200, 250);
+                    terminar();
                 } // resultado
                 else {
                     g.drawString("PERDISTE", 200, 250);
+                    terminar();
                 }
                 for (int q = 0; q < 10; q++) {
                     g.drawImage(puntos[q], 1 + (q * 40), 480, 40, 40, null); // dibuja puntos en abejas
                 }
+                
             } else {
                 g.drawImage(abejas[SelImg], Abejax, Abejay, dsizex, dsizey, null); // dibuja nueva abeja, nueva imagen
                 CuadroAbeja = new Rectangle(Abejax, Abejay, dsizex, dsizey); // se le asigna al rectangulo las
@@ -302,7 +348,16 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
             sonido3.play();
         } // sonido sin balas
     }
-
+    public static Connection getConnection() {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (Exception e) {
+            System.out.println("ERROR" + e.getMessage());
+        }
+        return con;
+    }
     public void mouseDragged(MouseEvent e) {
     }
 
@@ -328,18 +383,36 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField2 = new javax.swing.JTextField();
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 697, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(659, Short.MAX_VALUE)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 347, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 327, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
