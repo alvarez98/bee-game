@@ -121,33 +121,37 @@ public class SignIn extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        BestScores bs = new BestScores();
-        bs.setVisible(true);
-        bs.setLocationRelativeTo(null);
-        bs.setTitle("Best Scores");
-        this.dispose();
-        /**
-         * try {
-         *
-         * Connection con = null; con = getConnection(); PreparedStatement ps;
-         * boolean band = false; ResultSet res; ps =
-         * con.prepareStatement("SELECT id_user, name_user, password_user FROM
-         * users"); res = ps.executeQuery();
-         *
-         * while (res.next()) {
-         *
-         * if (res.getString("name_user").equals(txtUsuario.getText())) { if
-         * (res.getString("password_user").equals(txtPass.getText())) { band =
-         * true; BestScores bs = new BestScores(); bs.setVisible(true);
-         * bs.setLocationRelativeTo(null); bs.setTitle("Best Scores");
-         * this.dispose(); } else { JOptionPane.showMessageDialog(null,
-         * "Contraseña incorrecta"); } } } if (!band) {
-         * JOptionPane.showMessageDialog(null, "No se encontró el usuario"); }
-         * con.close();
-         *
-         * } catch (Exception ex) {
-         * Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex); }
-         */
+        try {
+            Connection con = null;
+            con = getConnection();
+            PreparedStatement ps;
+            boolean band = false;
+            ResultSet res;
+            ps = con.prepareStatement("SELECT id_user, name_user, password_user FROM users");
+            res = ps.executeQuery();
+            while (res.next()) {
+                if (res.getString("name_user").equals(txtUsuario.getText())) {
+                    if (res.getString("password_user").equals(txtPass.getText())) {
+                        band = true;
+                        BestScores bs = new BestScores();
+                        bs.setVisible(true);
+                        bs.setLocationRelativeTo(null);
+                        bs.setTitle("Best Scores");
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Contraseña incorrecta");
+                    }
+                }
+            }
+            if (!band) {
+                JOptionPane.showMessageDialog(null, "No se encontró el usuario");
+            }
+            con.close();
+        } catch (Exception ex) {
+            Logger.getLogger(SignIn.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
