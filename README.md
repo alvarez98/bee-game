@@ -1,4 +1,4 @@
-# BeegGame (Dale Abeja!)
+# BeeGame (Dale Abeja!)
 
 ![](beegame.png)
 
