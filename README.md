@@ -2,6 +2,12 @@
 
 ![](beegame.png)
 
+
+## Setup
+> daleabeja.sql
+- Password: root
+- User: root
+
 ## **TODO**
 > BestScores.java
 - Get all Scores and show on table
