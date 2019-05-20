@@ -6,7 +6,6 @@
 package daleabeja;
 
 import com.mysql.jdbc.Connection;
-import static daleabeja.SignIn.getConnection;
 import static daleabeja.SignIn.txtUsuario;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -17,16 +16,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import sql.sql_con;
 
 /**
  *
  * @author Raul Novelo
  */
 public class BestScores extends javax.swing.JFrame {
-
-    public static final String URL = "jdbc:mysql://localhost:3306/beegame?useSSL=false";
-    public static final String USERNAME = "root";
-    public static final String PASSWORD = "root";
     
     DefaultTableModel model;
 
@@ -77,7 +73,7 @@ public class BestScores extends javax.swing.JFrame {
     public void fetchBestScores(){
         try {
             Connection con = null;
-            con = getConnection();
+            con = sql_con.getConnection();
             PreparedStatement psScores;
             ResultSet resScores;
             psScores = con.prepareStatement("SELECT id_user, score_sc FROM scores ORDER BY score_sc DESC");

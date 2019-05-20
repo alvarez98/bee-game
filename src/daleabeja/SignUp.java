@@ -6,13 +6,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet; 
 import javax.swing.JOptionPane;
+import sql.sql_con;
 
 public class SignUp extends javax.swing.JFrame {
 
-    public static final String URL = "jdbc:mysql://localhost:3306/beegame?useSSL=false";
-    public static final String USERNAME = "root";
-    public static final String PASSWORD = "root";
-    
     public SignUp() {
         initComponents();
     }
@@ -143,7 +140,7 @@ public class SignUp extends javax.swing.JFrame {
         try {
             
             Connection con = null;
-            con = getConnection();
+            con = sql_con.getConnection();
             int serial = 0;
             PreparedStatement ps;
             ResultSet res;
@@ -170,16 +167,6 @@ public class SignUp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSignInActionPerformed
 
-    public static Connection getConnection() {
-        Connection con = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (Exception e) {
-            System.out.println("ERROR" + e.getMessage());
-        }
-        return con;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSignIn;

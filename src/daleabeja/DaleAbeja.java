@@ -13,6 +13,7 @@ import static java.lang.Thread.sleep;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import sql.sql_con;
 
 public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMotionListener, MouseListener {
 
@@ -296,10 +297,10 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
                 try {
 
                     Connection con = null;
-                    con = getConnection();
+                    con = sql_con.getConnection();
                     PreparedStatement ps, ps1;
                     Date date = new Date();
-                    DateFormat hourFormat = new SimpleDateFormat("dd-mm-yy hh:mm:ss ");
+                    DateFormat hourFormat = new SimpleDateFormat("YYYY-MM-dd");
                     ResultSet res;
                     ps = con.prepareStatement("SELECT id_user FROM users WHERE name_user=\"" + getUsuario() + "\";");
                     res = ps.executeQuery();
@@ -307,6 +308,7 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
                         ps1 = con.prepareStatement("INSERT INTO scores ( id_user, score_sc, date_sc ) VALUES ( \"" + res.getString("id_user") + "\",\"" + atinados + "\", \"" + hourFormat.format(date) + "\" );");
                         ps1.executeUpdate();
                     }
+                    
                     con.close();
 
                 } catch (Exception ex) {
@@ -347,17 +349,6 @@ public class DaleAbeja extends javax.swing.JPanel implements Runnable, MouseMoti
         } else {
             sonido3.play();
         } // sonido sin balas
-    }
-
-    public static Connection getConnection() {
-        Connection con = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (Exception e) {
-            System.out.println("ERROR" + e.getMessage());
-        }
-        return con;
     }
 
     public void mouseDragged(MouseEvent e) {
